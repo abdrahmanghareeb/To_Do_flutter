@@ -9,7 +9,6 @@ import 'package:todo/shared/components/components.dart';
 import 'package:todo/shared/components/constants.dart';
 
 class bottomNavigationBarLayout extends StatefulWidget {
-  // start app new
   @override
   State<bottomNavigationBarLayout> createState() =>
       _BottomNavigationBarLayoutState();
