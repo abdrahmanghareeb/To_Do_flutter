@@ -57,3 +57,8 @@ Widget taskCard({@required tasksList }){
     ),
   );
 }
+
+void showTheBottomSheet(
+    {required BuildContext context, required WidgetBuilder builder}) {
+  showModalBottomSheet(context: context, builder: builder);
+}
