@@ -127,7 +127,7 @@ class bottomNavigationBarLayout extends StatelessWidget {
                                                       cubit.timeController.text,
                                                       cubit.dateController.text);
                                                   // //added line (test)
-                                                  // cubit.getRows(cubit.database);
+                                                  cubit.getRows(cubit.database);
                                                   Navigator.pop(context);
                                                 }
                                               },
