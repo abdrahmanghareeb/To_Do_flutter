@@ -10,25 +10,24 @@ class tasks extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return BlocProvider(
-      //? try create
-      create: (context) => appCubit(),
-      child: BlocConsumer<appCubit, appCubitStates>(
-        listener: (context, state) {
-          // if(state is getDataBasetate) appCubit().changeTasksState();
-          },
-        builder: (context, state) =>  Container(
-          color: Colors.grey[100],
-          child: ListView.separated(
-              itemBuilder: (context, index) =>  taskCard(tasksList: appCubit().tasksList[index]),
-              separatorBuilder: (context, index) => Container(
-                color: Colors.grey,
-                width: double.infinity,
-                height: 1,
-              ),
-              itemCount: appCubit().tasksList.length),
-        ),
-      ),
+    return BlocConsumer<appCubit, appCubitStates>(
+      listener: (context, state) {
+        // if(state is getDataBasetate) appCubit().changeTasksState();
+        },
+      builder: (context, state) {
+        List<Map> taskslist = appCubit.get(context).tasksList;
+       return Container(
+        color: Colors.grey[100],
+        child: ListView.separated(
+            itemBuilder: (context, index) =>  taskCard(tasksList: taskslist[index]),
+            separatorBuilder: (context, index) => Container(
+              color: Colors.grey,
+              width: double.infinity,
+              height: 1,
+            ),
+            itemCount: taskslist.length),
+      );
+       },
     );
   }
 }

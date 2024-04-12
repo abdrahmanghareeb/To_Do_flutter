@@ -10,6 +10,9 @@ import 'package:todo/modules/archive.dart';
 import 'package:todo/modules/done.dart';
 import 'package:todo/modules/tasks.dart';
 import 'package:todo/shared/Cubit/states.dart';
+import 'package:todo/shared/components/constants.dart';
+
+
 
 class appCubit extends Cubit<appCubitStates>{
 
@@ -19,8 +22,8 @@ class appCubit extends Cubit<appCubitStates>{
 
   // database variable
   late Database database;
+  List<Map> tasksList = [];
   // list to carry the Database records
-  List<Map> tasksList = List.empty();
   // attributes
   String modulesTitle = "app";
   List<String> title = ["Tasks", "Done Tasks", "Archive"];
@@ -69,6 +72,8 @@ class appCubit extends Cubit<appCubitStates>{
       onOpen: (db) {
         print("DB opened successfully.");
         getRows(db).then((value) {
+          tasksList = value;
+          // tasksList
           print(tasksList);
           emit(getDataBasetate());
           // //to refresh the screen of tasks
@@ -78,18 +83,26 @@ class appCubit extends Cubit<appCubitStates>{
     ).then((value) { database = value ; emit(openDataBaseState());});
   }
 
-  Future insertRow(var title, var time, var date ) async {
+  insertRow(var title, var time, var date ) async {
     database
         .rawInsert(
         'INSERT INTO tasks (name , time , date , state) VALUES ("$title", "$time", "$date" , "not Finished")')
         .then((value) {
       print("row $value insterted successfully...");
       emit(insertIntoDataBasetate());
+      getRows(database).then((value) {
+        tasksList = value;
+        // tasksList
+        print(tasksList);
+        emit(getDataBasetate());
+        // emit tasksState  and clear all the TextFormFields in the Bottom Sheet
+        changeTasksState();
+      });
     });
   }
 
-  Future<void> getRows(db) async {
-    tasksList = await db.rawQuery('SELECT * FROM tasks');
+  Future<List<Map>> getRows(db) async {
+    return await db.rawQuery('SELECT * FROM tasks');
 
   }
 
@@ -97,12 +110,13 @@ class appCubit extends Cubit<appCubitStates>{
   void changeBottomSheetState(){
     emit(bottomSheetState());
   }
+
   // bottom sheet state
   void changeTasksState(){
     //important : clear the TextFormFields again in the bottom sheet
-     nameController = TextEditingController();
-     timeController = TextEditingController();
-     dateController = TextEditingController();
+    nameController = TextEditingController();
+    timeController = TextEditingController();
+    dateController = TextEditingController();
     emit(onTasksState());
   }
 }

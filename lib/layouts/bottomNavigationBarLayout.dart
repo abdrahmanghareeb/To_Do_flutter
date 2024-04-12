@@ -125,10 +125,9 @@ class bottomNavigationBarLayout extends StatelessWidget {
                                                   cubit.insertRow(
                                                       cubit.nameController.text,
                                                       cubit.timeController.text,
-                                                      cubit.dateController.text);
-                                                  // //added line (test)
-                                                  cubit.getRows(cubit.database);
-                                                  Navigator.pop(context);
+                                                      cubit.dateController.text).then((value) {
+                                                        Navigator.pop(context);
+                                                  });
                                                 }
                                               },
                                               child: Text(
