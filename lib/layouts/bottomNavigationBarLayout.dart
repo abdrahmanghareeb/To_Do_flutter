@@ -12,19 +12,15 @@ import 'package:todo/shared/components/constants.dart';
 
 class bottomNavigationBarLayout extends StatelessWidget {
 
-  // createDatabase();
-  late Database database;
-
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) =>appCubit(),
+      // to create the database first
+      create: (BuildContext context) =>appCubit()..createDatabase(),
 
-      child: BlocConsumer<appCubit , cubitStates>(
+      child: BlocConsumer<appCubit , appCubitStates>(
         listener: (context, state) {},
         builder:(context, state) {
-          createDatabase();
           appCubit cubit = appCubit.get(context);
           return Scaffold(
               resizeToAvoidBottomInset: true,
@@ -41,6 +37,7 @@ class bottomNavigationBarLayout extends StatelessWidget {
                   ? FloatingActionButton(
                   backgroundColor: Colors.blue,
                   onPressed: () {
+                    cubit.changeBottomSheetState();
                     // scaffoldKey.currentState?.showBottomSheet((context) {});
                     showTheBottomSheet(
                         context: context,
@@ -125,13 +122,12 @@ class bottomNavigationBarLayout extends StatelessWidget {
                                               onPressed: () {
                                                 if (cubit.formKey.currentState!
                                                     .validate()) {
-                                                  insertRow(
+                                                  cubit.insertRow(
                                                       cubit.nameController.text,
                                                       cubit.timeController.text,
                                                       cubit.dateController.text);
                                                   // //added line (test)
-                                                  getRows(database);
-                                                  // cubit.addToList();
+                                                  // cubit.getRows(cubit.database);
                                                   Navigator.pop(context);
                                                 }
                                               },
@@ -174,45 +170,4 @@ class bottomNavigationBarLayout extends StatelessWidget {
     );
   }
 
-  // database manipulation....
-  // create database
-  // create table
-  // open db
-  // insert, get, update, delete
-
-  void createDatabase() async {
-    database
-    = await openDatabase(
-      'todo.db',
-      version: 1,
-      onCreate: (db, version) {
-        print("DB created successfully.");
-        db
-            .execute(
-                'CREATE TABLE tasks (id INTEGER PRIMARY KEY, name TEXT, time TIME, date DATE, state REAL)')
-            .then((value) {
-          print("Table created successfully");
-        }).catchError((error) {
-          print("failed to excute the table ${error.toString()}");
-        });
-      },
-      onOpen: (db) {
-        getRows(db);
-        print("DB opened successfully.");
-      },
-    );
-  }
-
-  Future insertRow(var title, var time, var date ) async {
-    database
-        .rawInsert(
-            'INSERT INTO tasks (name , time , date , state) VALUES ("$title", "$time", "$date" , "not Finished")')
-        .then((value) {
-      print("row $value insterted successfully...");
-    });
-  }
-
-  Future<void> getRows(db) async {
-    tasksList = await db.rawQuery('SELECT * FROM tasks');
-  }
 }
