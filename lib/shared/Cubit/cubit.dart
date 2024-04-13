@@ -141,4 +141,15 @@ class appCubit extends Cubit<appCubitStates>{
      });
   }
 
+  void deleteRowFromDB(@required id) async {
+    // Delete a record
+    await database
+        .rawDelete('DELETE FROM tasks WHERE id = ?', ['$id']).then((value) {
+          print("the deleted record $value");
+          getRows(database);
+          emit(deleteFromDataBasetate());
+    });
+    // assert(count == 1);
+  }
+
 }
