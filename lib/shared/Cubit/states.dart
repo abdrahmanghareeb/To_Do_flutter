@@ -31,3 +31,6 @@ class getDataBasetate extends appCubitStates{
 class insertIntoDataBasetate extends appCubitStates{
 
 }
+class updateIntoDataBasetate extends appCubitStates{
+
+}

@@ -15,11 +15,11 @@ class tasks extends StatelessWidget {
         // if(state is getDataBasetate) appCubit().changeTasksState();
         },
       builder: (context, state) {
-        List<Map> taskslist = appCubit.get(context).tasksList;
+        List<Map> taskslist = appCubit.get(context).newTasksList;
        return Container(
         color: Colors.grey[100],
         child: ListView.separated(
-            itemBuilder: (context, index) =>  taskCard(tasksList: taskslist[index]),
+            itemBuilder: (context, index) =>  taskCard(tasksItem: taskslist[index] , context: context),
             separatorBuilder: (context, index) => Container(
               color: Colors.grey,
               width: double.infinity,

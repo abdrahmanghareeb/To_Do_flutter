@@ -22,7 +22,9 @@ class appCubit extends Cubit<appCubitStates>{
 
   // database variable
   late Database database;
-  List<Map> tasksList = [];
+  List<Map> newTasksList = [];
+  List<Map> doneTasksList = [];
+  List<Map> archiveTasksList = [];
   // list to carry the Database records
   // attributes
   String modulesTitle = "app";
@@ -61,7 +63,7 @@ class appCubit extends Cubit<appCubitStates>{
         print("DB created successfully.");
         db
             .execute(
-            'CREATE TABLE tasks (id INTEGER PRIMARY KEY, name TEXT, time TIME, date DATE, state REAL)')
+            'CREATE TABLE tasks (id INTEGER PRIMARY KEY, name TEXT, time TIME, date DATE, status TEXT)')
             .then((value) {
           print("Table created successfully");
           emit(createDataBaseState());
@@ -71,14 +73,7 @@ class appCubit extends Cubit<appCubitStates>{
       },
       onOpen: (db) {
         print("DB opened successfully.");
-        getRows(db).then((value) {
-          tasksList = value;
-          // tasksList
-          print(tasksList);
-          emit(getDataBasetate());
-          // //to refresh the screen of tasks
-          // changeTasksState();
-        });
+        getRows(db);
       },
     ).then((value) { database = value ; emit(openDataBaseState());});
   }
@@ -86,24 +81,40 @@ class appCubit extends Cubit<appCubitStates>{
   insertRow(var title, var time, var date ) async {
     database
         .rawInsert(
-        'INSERT INTO tasks (name , time , date , state) VALUES ("$title", "$time", "$date" , "not Finished")')
+        'INSERT INTO tasks (name , time , date , status) VALUES ("$title", "$time", "$date" , "new")')
         .then((value) {
       print("row $value insterted successfully...");
       emit(insertIntoDataBasetate());
-      getRows(database).then((value) {
-        tasksList = value;
-        // tasksList
-        print(tasksList);
-        emit(getDataBasetate());
-        // emit tasksState  and clear all the TextFormFields in the Bottom Sheet
-        changeTasksState();
-      });
+      getRows(database);
     });
   }
 
-  Future<List<Map>> getRows(db) async {
-    return await db.rawQuery('SELECT * FROM tasks');
-
+  void getRows(db)  {
+    newTasksList = [];
+    doneTasksList = [];
+    archiveTasksList = [];
+    db.rawQuery('SELECT * FROM tasks order by id').then((value) {
+      value.forEach((value){
+        if(value['status'] == "new") {
+          newTasksList.add(value);
+          // new tasksList
+          print(newTasksList);
+        }
+        else if (value['status'] == "done") {
+          doneTasksList.add(value);
+          // done tasksList
+          print(doneTasksList);
+        }
+        else if (value['status'] == "archive") {
+          archiveTasksList.add(value);
+          // archive tasksList
+          print(archiveTasksList);
+        }
+      });
+      emit(getDataBasetate());
+      // emit tasksState  and clear all the TextFormFields in the Bottom Sheet
+      changeTasksState();
+    });
   }
 
   // bottom sheet state when clicking on the floating action button
@@ -119,4 +130,15 @@ class appCubit extends Cubit<appCubitStates>{
     dateController = TextEditingController();
     emit(onTasksState());
   }
+
+  void updateDatabase({@required status ,@required id}) async {
+    // Update some record
+     await database.rawUpdate(
+        'UPDATE tasks SET status = ? WHERE id = ?',
+        ['$status' , '$id']).then((value) {
+          emit(updateIntoDataBasetate());
+       getRows(database);
+     });
+  }
+
 }
