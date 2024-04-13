@@ -34,3 +34,6 @@ class insertIntoDataBasetate extends appCubitStates{
 class updateIntoDataBasetate extends appCubitStates{
 
 }
+class deleteFromDataBasetate extends appCubitStates{
+
+}

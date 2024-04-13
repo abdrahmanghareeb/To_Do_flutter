@@ -19,17 +19,7 @@ class _archiveState extends State<archive> {
       },
       builder: (context, state) {
         List<Map> taskslist = appCubit.get(context).archiveTasksList;
-        return Container(
-          color: Colors.grey[100],
-          child: ListView.separated(
-              itemBuilder: (context, index) =>  taskCard(tasksItem: taskslist[index] , context: context),
-              separatorBuilder: (context, index) => Container(
-                color: Colors.grey,
-                width: double.infinity,
-                height: 1,
-              ),
-              itemCount: taskslist.length),
-        );
+        return taskCardBuilder(taskslist);
       },
     );
 

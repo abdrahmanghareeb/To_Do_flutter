@@ -39,6 +39,7 @@ dependencies:
   intl: ^0.19.0
   bloc: ^8.1.4
   flutter_bloc: ^8.1.4
+  conditional_builder_null_safety: ^0.0.6
 
 dev_dependencies:
   flutter_test:
