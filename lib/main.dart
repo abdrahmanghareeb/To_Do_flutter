@@ -1,4 +1,6 @@
+import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:todo/shared/Cubit/observer.dart';
 
 import 'layouts/bottomNavigationBarLayout.dart';
 
@@ -8,6 +10,7 @@ import 'layouts/bottomNavigationBarLayout.dart';
 // edit 2
 
 void main() {
+  Bloc.observer = MyBlocObserver();
   runApp(const MyApp());
 }
 
